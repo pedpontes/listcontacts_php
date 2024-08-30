@@ -2,6 +2,10 @@
 <html lang="pt-BR">
 
 <?php include "../includes/head.php" ?>
+<head>
+    <title>contacts list table - Bootdey.com</title>
+    <link rel="stylesheet" href="../public/css/contacts.css">
+</head>
 <body>
     <div class="container">
         <?php include "../includes/nav.php" ?>
