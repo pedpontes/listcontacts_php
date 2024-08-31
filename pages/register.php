@@ -23,3 +23,25 @@
         exit();
     }
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <form action="" method="post">
+        <label for="username">
+            Username:
+            <input type="text" name="username" id="username" require>
+        </label>
+        <label for="pass">
+            Username:
+            <input type="password" name="pass" id="pass" require>
+        </label>
+        <input type="submit" value="Registrar">
+    </form>
+</body>
+</html>

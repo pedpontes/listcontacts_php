@@ -1,3 +1,43 @@
+<?php
+    if($_SERVER["REQUEST_METHOD"] === "GET"){
+        include "../includes/check_session.php";
+
+        $username = trim($_SESSION["username"]);
+
+        $conn = getDbConnection();
+
+        $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
+        if(!$stmt->execute())
+            exit();
+        $result = $stmt->get_result();
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $userId = $row['id'];
+        } else {
+            die('User not found');
+        }
+    
+        $stmt->close();
+    
+        $stmt = $conn->prepare("SELECT name, tell, email, obs FROM contacts WHERE user_id = ?");
+        if (!$stmt) {
+            die();
+        }
+    
+        $stmt->bind_param("i", $userId);
+        if (!$stmt->execute()) {
+            exit();
+        }
+    
+        $result = $stmt->get_result();
+        $contacts = $result->fetch_all();
+    
+        $stmt->close();
+        $conn->close();
+    }
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -8,7 +48,7 @@
 </head>
 <body>
     <div class="container">
-        <?php include "../includes/nav.php" ?>
+        <?php include "../includes/header.php" ?>
         <div class="row">
             <div class="col-lg-12">
                 <div class>
@@ -36,14 +76,13 @@
                                                 class="form-check-input" id="contacusercheck1" /><label
                                                 class="form-check-label" for="contacusercheck1"></label></div>
                                     </th>
-                                    <td><a href="#" class="text-body">Simon
-                                            Ryles</a></td>
-                                    <td><span class="badge badge-soft-success mb-0">998826493</span></td>
+                                    <td><a href="#" class="text-body"><?= $item[0] ?></a></td>
+                                    <td><span class="badge badge-soft-success mb-0"><?= $item[1] ?></span></td>
                                     <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                            data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133">daniel.pereirafr23@gmail.com</a>
+                                            data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133"><?= $item[2] ?></a>
                                     </td>
-                                    <td>Rua dsafsdf sdafadsf, 31. Bairro dsfsdaf dsafdsf</td>
-                                    <td>sdfsdfsdfsdfsdfsdfsdfsdfsdf</td>
+                                    <td><?= $item[3] ?></td>
+                                    <td><?= $item[4] ?></td>
                                     <td>
                                         <ul class="list-inline mb-0">
                                             <li class="list-inline-item">
