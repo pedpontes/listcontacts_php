@@ -32,12 +32,11 @@
     }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="pt-BR">
     <?php include "../includes/head.php" ?>
 <head>
-    <title>contacts list table - Bootdey.com</title>
+    <title>Contacts list table - Bootdey.com</title>
     <link rel="stylesheet" href="../public/css/contacts.css">
 </head>
 <body>
@@ -51,48 +50,22 @@
         <div class="col-md-6">
             <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
                 <div>
-                    <ul class="nav nav-pills">
-                        <li class="nav-item">
-                            <a aria-current="page" href="#"
-                                class="router-link-active router-link-exact-active nav-link active"
-                                data-bs-toggle="tooltip" data-bs-placement="top" title data-bs-original-title="List"
-                                aria-label="List">
-                                <i class="bx bx-list-ul"></i>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link" data-bs-toggle="tooltip" data-bs-placement="top" title
-                                data-bs-original-title="Grid" aria-label="Grid"><i class="bx bx-grid-alt"></i></a>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <a href="#" data-bs-toggle="modal" data-bs-target=".add-new" class="btn btn-primary"><i
-                            class="bx bx-plus me-1"></i> Adicionar</a>
-                </div>
-                <div class="dropdown">
-                    <a class="btn btn-link text-muted py-1 font-size-16 shadow-none dropdown-toggle" href="#"
-                        role="button" data-bs-toggle="dropdown" aria-expanded="false"><i
-                            class="bx bx-dots-horizontal-rounded"></i></a>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                    </ul>
+                    <a href="/pages/addcontacts.php" class="btn btn-primary"><i
+                            class="bx bx-plus me-1"></i>Adicionar</a>
                 </div>
             </div>
         </div>
     </div>
-    <?php 
-        if(count($contacts) == 0){ ?>
-        <div class="row">
-            Nenhum contato para mostrar.
-        </div>
-    <?php }else{ ?>
     <div class="row">
         <div class="col-lg-12">
             <div class>
                 <div class="table-responsive">
+                    <?php 
+                        if(count($contacts) == 0){ ?>
+                        <td>
+                            Nenhum contato para mostrar.
+                        </td>
+                    <?php } else{ ?>
                     <table class="table project-list-table table-nowrap align-middle table-borderless">
                         <thead>
                             <tr>
@@ -117,13 +90,13 @@
                                             class="form-check-input" id="contacusercheck1" /><label
                                             class="form-check-label" for="contacusercheck1"></label></div>
                                 </th>
-                                <td><a href="#" class="text-body"></a></td>
-                                <td><span class="badge badge-soft-success mb-0"></span></td>
+                                <td><a href="#" class="text-body"><?= $item[2] ?></a></td>
+                                <td><span class="badge badge-soft-success mb-0"><?= $item[3] ?></span></td>
                                 <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133"></a>
+                                        data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133"><?= $item[4] ?></a>
                                 </td>
-                                <td></td>
-                                <td></td>
+                                <td><?= $item[6] ?></td>
+                                <td><?= $item[5] ?></td>
                                 <td>
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
@@ -138,12 +111,10 @@
                                         </li>
                                         <li class="list-inline-item dropdown">
                                             <a class="text-muted dropdown-toggle font-size-18 px-2" href="#"
-                                                role="button" data-bs-toggle="dropdown" aria-haspopup="true"><i
-                                                    class="bx bx-dots-vertical-rounded"></i></a>
+                                                role="button" data-bs-toggle="dropdown" aria-haspopup="true">
+                                                    <i class="bx bx-dots-vertical-rounded"></i></a>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="#">Action</a><a class="dropdown-item"
-                                                    href="#">Another action</a><a class="dropdown-item"
-                                                    href="#">Something else here</a>
+                                                <a class="dropdown-item" href="/pages/updatecontacts.php?id=<?= "$item[0]" ?>">Editar</a><a class="dropdown-item"/>
                                             </div>
                                         </li>
                                     </ul>
@@ -151,11 +122,11 @@
                             </tr>
                         </tbody>
                     </table>
+                    <?php } ?>
                 </div>
             </div>
         </div>
     </div>
-    <?php } ?>
     <?php include "../includes/footer_contacts.php"?>
     </div>
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
