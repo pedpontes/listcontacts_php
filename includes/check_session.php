@@ -28,5 +28,11 @@
                 exit();
             }
         }
+        else{
+            if(basename($_SERVER['PHP_SELF']) === "login.php"){
+                header("location: /pages/contacts.php");
+                exit();
+            }
+        }
     }
 ?>

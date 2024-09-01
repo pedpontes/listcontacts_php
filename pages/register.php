@@ -2,25 +2,29 @@
     require "../services/db.php";
 
     if($_SERVER["REQUEST_METHOD"] === "POST"){
-        if(!isset($_POST["username"]) || !isset($_POST["pass"])) exit();
+        if(!isset($_POST["username"]) || !isset($_POST["pass"]) || !isset($_POST["email"])) exit();
 
-        $username = $_POST["username"];
-        $pass = $_POST["pass"];
+        $username = trim($_POST["username"]);
+        $pass = trim($_POST["pass"]);
+        $email = trim($_POST["email"]);
 
-        $conn = getDbConnection();
-        
-        $stmt = $conn->prepare("INSERT INTO users (username, pass) VALUES (?,?)");
-        $stmt->bind_param('ss', $username, $pass);
+        if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+            
+            $conn = getDbConnection();
+            
+            $stmt = $conn->prepare("INSERT INTO users (username, pass, email) VALUES (?,?,?)");
+            $stmt->bind_param('sss', $username, $pass, $email);
 
-        $isSuccess = $stmt->execute();
-        
-        $conn->close();
-        $stmt->close();
+            $isSuccess = $stmt->execute();
 
-        if(!$isSuccess) exit();
-        
-        header("location: /pages/login.php");
-        exit();
+            $conn->close();
+            $stmt->close();
+            
+            if(!$isSuccess) exit();
+
+            header("location: /pages/login.php");
+            exit();
+        }
     }
 ?>
 
@@ -40,6 +44,10 @@
         <label for="pass">
             Username:
             <input type="password" name="pass" id="pass" require>
+        </label>
+        <label for="email">
+            Email:
+            <input type="email" name="email" id="email">
         </label>
         <input type="submit" value="Registrar">
     </form>
