@@ -49,12 +49,15 @@
         </div>
         <div class="col-md-6">
             <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-                <div>
-                    <a href="/pages/addcontacts.php" class="btn btn-primary"><i
+                <div style="color: white;" onclick= "handleModalView()">
+                    <a class="btn btn-primary"><i
                             class="bx bx-plus me-1"></i>Adicionar</a>
                 </div>
             </div>
         </div>
+    </div>
+    <div id="modal-add" style="display: none;">
+        <?php include "../includes/addcontacts.php"; ?>
     </div>
     <div class="row">
         <div class="col-lg-12">
@@ -133,6 +136,16 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript"></script>
+    <script>
+        const handleModalView = () => {
+            var inputOnModal = document.querySelectorAll("input.form-control");
+            var modal = document.getElementById("modal-add");
+            modal.style.display = modal.style.display == "none" 
+                ? "block"
+                : "none";
+            inputOnModal.forEach(item => item.value = "");
+        }
+    </script>
 </body>
 
 </html>
