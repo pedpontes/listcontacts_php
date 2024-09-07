@@ -12,9 +12,13 @@
             
             $conn = getDbConnection();
             
+            $pass = password_hash($pass, PASSWORD_BCRYPT);
+
+            echo $pass;
+
             try {
-                $stmt = $conn->prepare("INSERT INTO users (username, pass, email) VALUES (?,?,?)");
-                $stmt->bind_param('sss', $username, $pass, $email);
+                $stmt = $conn->prepare("INSERT INTO users (username, pass, email) VALUES (?,'$pass',?)");
+                $stmt->bind_param('ss', $username, $email);
                 
                 $stmt->execute();
             } catch (mysqli_sql_exception $e) {

@@ -8,25 +8,29 @@
     $username = trim($_POST["username"]);
     $pass = trim($_POST["pass"]);
     
-    $conn = getDbConnection();
-        
-    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? and pass = ?");
-    $stmt->bind_param("ss", $username, $pass);
-    $stmt->execute();
+    try {
+      $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+      $stmt->bind_param("s", $username);
+
+      $stmt->execute();
+    } catch (mysqli_sql_exception $e) {
+      exit("Erro: ". $e->getMessage());
+    }
 
     $result = $stmt->get_result();
-    $exist = $result->num_rows > 0 ? true : false;
-    
+    $data = $result->fetch_assoc();
+
+    $exist = $result && password_verify($pass, $data["pass"]);
+
     $stmt->close();
     $conn->close();
     
     if($exist){
-      $data = $result->fetch_assoc();
       $_SESSION["username"] = $data["username"];
       $_SESSION["pass"] = $data["pass"];
       $_SESSION["id"] = $data["id"];
       
-      header("location: /pages/contacts.php");
+      header("Location: /pages/contacts.php");
       exit();
     }
   }

@@ -1,5 +1,4 @@
 <?php
-    include "../services/db.php";
     include "../includes/check_session.php";
 
     if($_SERVER["REQUEST_METHOD"] === "GET"){
@@ -40,8 +39,6 @@
         $tell = $_POST["tell"];
         $address = $_POST["address"];
         $obs = isset($_POST["obs"]) ? $_POST["obs"] : "";
-
-        $conn = getDbConnection();
 
         $stmt = $conn->prepare("INSERT INTO contacts (name, address, user_id, tell, email, obs) VALUES (?,?,'$id',?,?,?)");
         $stmt->bind_param("sssss", $name, $email, $tell, $address, $obs);

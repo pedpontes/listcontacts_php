@@ -1,38 +1,39 @@
 <?php
-    require_once "../services/db.php";
+    include "../services/db.php";
+
+    $conn = getDbConnection();
 
     session_start();
 
-    if(!isset($_SESSION["username"]) || !isset($_SESSION["pass"])){
+    if(!isset($_SESSION["username"]) || !isset($_SESSION["pass"]) || !isset($_SESSION["id"])){
+        exit("aq");
         if(basename($_SERVER['PHP_SELF']) !== "login.php"){
             header("location: /pages/login.php");
             exit();
         }
     }
     else{
-        $username = trim($_SESSION["username"]);
-        $pass = trim($_SESSION["pass"]);
+        $username = $_SESSION["username"];
+        $pass = $_SESSION["pass"];
+        $id = $_SESSION["id"];
 
-        $conn = getDbConnection();
-        
-        $stmt = $conn->prepare("SELECT * FROM users WHERE username = ? and pass = ?");
-        $stmt->bind_param("ss", $username, $pass);
-        $stmt->execute();
+        $result = $conn->query("SELECT * FROM users WHERE id = '$id'");
+        $data = $result->fetch_assoc();
 
-        $result = $stmt->get_result();
-        $exist = $result->num_rows > 0 ? true : false;
+        $exist = password_verify($pass, $data["pass"]);
 
+        echo $exist;
+
+        exit();
         if(!$exist){
             if(basename($_SERVER['PHP_SELF']) !== "login.php"){
                 header("location: /pages/login.php");
                 exit();
             }
-        }
-        else{
+        }else{
             if(basename($_SERVER['PHP_SELF']) === "login.php"){
                 header("location: /pages/contacts.php");
                 exit();
             }
         }
     }
-?>
