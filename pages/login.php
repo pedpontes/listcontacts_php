@@ -21,8 +21,10 @@
     $conn->close();
     
     if($exist){
-      $_SESSION["username"] = $username;
-      $_SESSION["pass"] = $pass;
+      $data = $result->fetch_assoc();
+      $_SESSION["username"] = $data["username"];
+      $_SESSION["pass"] = $data["pass"];
+      $_SESSION["id"] = $data["id"];
       
       header("location: /pages/contacts.php");
       exit();

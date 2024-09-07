@@ -1,34 +1,86 @@
 <?php
-    if($_SERVER["REQUEST_METHOD"] === "GET"){
-        include "../includes/check_session.php";
+    include "../services/db.php";
+    include "../includes/check_session.php";
 
-        $username = $_SESSION["username"];
+    if($_SERVER["REQUEST_METHOD"] === "GET"){
+
+        $userid = $_SESSION["id"];
+
+        $result = $conn->query("SELECT * FROM contacts WHERE user_id = $userid");    
+        
+        if (!$result) {
+            exit();
+        }
+
+        $contacts = $result->fetch_all();
+        
+        $conn->close();
+    }
+    elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $id = $_SESSION["id"];
+
+        if(!(
+            isset($_POST["name"])
+            || isset($_POST["email"])
+            || isset($_POST["tell"])
+            || isset($_POST["address"]))){
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
+        elseif(empty($_POST["name"]) 
+            || empty($_POST["email"]) 
+            || empty($_POST["address"])
+            || empty($_POST["tell"])) {
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
+            }
+
+        $name = $_POST["name"];
+        $email = $_POST["email"];
+        $tell = $_POST["tell"];
+        $address = $_POST["address"];
+        $obs = isset($_POST["obs"]) ? $_POST["obs"] : "";
 
         $conn = getDbConnection();
 
-        $result = $conn->query("SELECT id FROM users WHERE username = '$username'");
+        $stmt = $conn->prepare("INSERT INTO contacts (name, address, user_id, tell, email, obs) VALUES (?,?,'$id',?,?,?)");
+        $stmt->bind_param("sssss", $name, $email, $tell, $address, $obs);
 
-        if(!$result) exit();
-
-        if ($result->num_rows > 0) {
-            $userId = $result->fetch_assoc()["id"];
-        } else {
-            header("location: /pages/login.php");
+        if (!($stmt->execute())) {
+            header("Location: " . $_SERVER['PHP_SELF']);
             exit();
         }
-        
-        $stmt = $conn->prepare("SELECT * FROM contacts WHERE user_id = ?");    
-        $stmt->bind_param("i", $userId);
-
-        if (!$stmt->execute()) {
+        if(!($stmt->affected_rows > 0)){
+            header("Location: " . $_SERVER['PHP_SELF']);
             exit();
-        }
-    
-        $result = $stmt->get_result();
-        $contacts = $result->fetch_all();
-    
+        } 
+
         $stmt->close();
         $conn->close();
+
+        header("location: /pages/contacts.php");
+    }
+    elseif($_SERVER["REQUEST_METHOD"] === "DELETE"){
+        if(!isset($_GET["id"])){
+            header("location: /pages/contacts.php");
+            exit();
+        }
+
+        $conn = getDbConnection();
+
+        $id = $_GET["id"];
+
+        $stmt = $conn->prepare("DELETE FROM contacts WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        if (!($stmt->execute())) {
+            header("location: /pages/contacts.php");
+            exit();
+        }
+
+        $stmt->close();
+        $conn->close();
+
+        header("location: /pages/contacts.php");
     }
 ?>
 
@@ -52,6 +104,9 @@
                 <div style="color: white;" onclick= "handleModalView()">
                     <a class="btn btn-primary"><i
                             class="bx bx-plus me-1"></i>Adicionar</a>
+                </div>
+                <div>
+                    <a class="btn btn-danger" href="/pages/logout.php">Logout</a>
                 </div>
             </div>
         </div>
@@ -87,6 +142,7 @@
                             </tr>
                         </thead>
                         <tbody>
+                            <?php foreach($contacts as $item){ ?>
                             <tr>
                                 <th scope="row" class="ps-4">
                                     <div class="form-check font-size-16"><input type="checkbox"
@@ -95,10 +151,10 @@
                                 </th>
                                 <td><a href="#" class="text-body"><?= $item[2] ?></a></td>
                                 <td><span class="badge badge-soft-success mb-0"><?= $item[3] ?></span></td>
-                                <td><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
-                                        data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133"><?= $item[4] ?></a>
+                                <td><a class="__cf_email__"
+                                        data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133"><?= $item[6] ?></a>
                                 </td>
-                                <td><?= $item[6] ?></td>
+                                <td><?= $item[4] ?></td>
                                 <td><?= $item[5] ?></td>
                                 <td>
                                     <ul class="list-inline mb-0">
@@ -107,22 +163,15 @@
                                                 data-bs-placement="top" title="Edit" class="px-2 text-primary"><i
                                                     class="bx bx-pencil font-size-18"></i></a>
                                         </li>
-                                        <li class="list-inline-item">
-                                            <a href="javascript:void(0);" data-bs-toggle="tooltip"
+                                        <li class="list-inline-item" id="dell" onclick="handleSubmitDell(<?= $item[0]?>)">
+                                            <a href="/pages/contacts.php?id=<?= $item[0]?>" data-bs-toggle="tooltip"
                                                 data-bs-placement="top" title="Delete" class="px-2 text-danger"><i
                                                     class="bx bx-trash-alt font-size-18"></i></a>
-                                        </li>
-                                        <li class="list-inline-item dropdown">
-                                            <a class="text-muted dropdown-toggle font-size-18 px-2" href="#"
-                                                role="button" data-bs-toggle="dropdown" aria-haspopup="true">
-                                                    <i class="bx bx-dots-vertical-rounded"></i></a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a class="dropdown-item" href="/pages/updatecontacts.php?id=<?= "$item[0]" ?>">Editar</a><a class="dropdown-item"/>
-                                            </div>
                                         </li>
                                     </ul>
                                 </td>
                             </tr>
+                            <?php } ?>
                         </tbody>
                     </table>
                     <?php } ?>
@@ -137,6 +186,16 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript"></script>
     <script>
+        const handleSubmitDell = async (id) => {
+            try {
+                await fetch(`/pages/contacts.php?id=${id}`, {
+                    method: "DELETE",
+                });
+            } catch (error) {
+                throw new Error(error);
+            }
+        }
+
         const handleModalView = () => {
             var inputOnModal = document.querySelectorAll("input.form-control");
             var modal = document.getElementById("modal-add");

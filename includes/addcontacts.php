@@ -9,7 +9,7 @@
         <div class="row gutters">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                 <div class="card h-100">
-                    <div class="card-body">
+                    <form action="" method="POST" class="card-body">
                         <div class="row gutters">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <h6 class="mb-2 text-primary">Informações pessoais</h6>
@@ -17,35 +17,35 @@
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="fullName">Nome
-                                        <input type="text" class="form-control" id="fullName" placeholder="Digite seu nome">
+                                        <input name="name" type="text" class="form-control" id="fullName" placeholder="Digite seu nome">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="eMail">E-mail
-                                        <input type="email" class="form-control" id="eMail" placeholder="exemplo@email.com">
+                                        <input name="email" type="email" class="form-control" id="eMail" placeholder="exemplo@email.com">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="phone">Telefone/Celular
-                                        <input type="text" class="form-control" id="phone" placeholder="359...">
+                                        <input name="tell" type="text" class="form-control" id="phone" placeholder="359...">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="website">Endereço
-                                        <input type="url" class="form-control" id="website" placeholder="Rua,número,bairro...">
+                                        <input name="address" type="text" class="form-control" id="address" placeholder="Rua,número,bairro...">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label for="website">Observação
-                                        <input type="url" class="form-control" id="website" placeholder="">
+                                    <label for="website">Observação (Opcional)
+                                        <input name="obs" type="text" class="form-control" id="obs" placeholder="">
                                     </label>
                                 </div>
                             </div>
@@ -53,12 +53,12 @@
                         <div class="row gutters">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="text-right">
-                                    <input onclick="handleModalView()" type="submit" id="submit" class="btn btn-secondary" value="Cancelar"/>
+                                    <input onclick="handleModalView()" type="button" id="cancel" class="btn btn-secondary" value="Cancelar"/>
                                     <input type="submit" id="submit" class="btn btn-primary" value="Adicionar"/>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>

@@ -12,15 +12,24 @@
             
             $conn = getDbConnection();
             
-            $stmt = $conn->prepare("INSERT INTO users (username, pass, email) VALUES (?,?,?)");
-            $stmt->bind_param('sss', $username, $pass, $email);
+            try {
+                $stmt = $conn->prepare("INSERT INTO users (username, pass, email) VALUES (?,?,?)");
+                $stmt->bind_param('sss', $username, $pass, $email);
+                
+                $stmt->execute();
+            } catch (mysqli_sql_exception $e) {
+                echo 'Erro:'. $e->getMessage();
+            }
 
-            $isSuccess = $stmt->execute();
+            if(!($stmt->affected_rows > 0)){
+                $conn->close();
+                $stmt->close();
+                header("location: /pages/register.php");
+                exit();
+            }
 
             $conn->close();
             $stmt->close();
-            
-            if(!$isSuccess) exit();
 
             header("location: /pages/login.php");
             exit();

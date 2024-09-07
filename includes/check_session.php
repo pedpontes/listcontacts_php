@@ -1,5 +1,5 @@
 <?php
-    include "../services/db.php";
+    require_once "../services/db.php";
 
     session_start();
 
