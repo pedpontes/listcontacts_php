@@ -6,30 +6,18 @@
         $userid = $_SESSION["id"];
 
         $result = $conn->query("SELECT * FROM contacts WHERE user_id = $userid");    
-        
-        if (!$result) {
-            exit();
-        }
 
         $contacts = $result->fetch_all();
-        
         $conn->close();
     }
     elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
         $id = $_SESSION["id"];
 
-        if(!(
-            isset($_POST["name"])
-            || isset($_POST["email"])
-            || isset($_POST["tell"])
-            || isset($_POST["address"]))){
+        if(!(isset($_POST["name"]) || isset($_POST["email"]) || isset($_POST["tell"]) || isset($_POST["address"]))){
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             }
-        elseif(empty($_POST["name"]) 
-            || empty($_POST["email"]) 
-            || empty($_POST["address"])
-            || empty($_POST["tell"])) {
+        elseif(empty($_POST["name"]) || empty($_POST["email"]) || empty($_POST["address"]) || empty($_POST["tell"])){
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
             }
@@ -39,14 +27,16 @@
         $tell = $_POST["tell"];
         $address = $_POST["address"];
         $obs = isset($_POST["obs"]) ? $_POST["obs"] : "";
+        
+        try {
+            $stmt = $conn->prepare("INSERT INTO contacts (name, address, user_id, tell, email, obs) VALUES (?,?,'$id',?,?,?)");
+            $stmt->bind_param("sssss", $name, $email, $tell, $address, $obs);
+            $stmt->execute();
 
-        $stmt = $conn->prepare("INSERT INTO contacts (name, address, user_id, tell, email, obs) VALUES (?,?,'$id',?,?,?)");
-        $stmt->bind_param("sssss", $name, $email, $tell, $address, $obs);
-
-        if (!($stmt->execute())) {
-            header("Location: " . $_SERVER['PHP_SELF']);
-            exit();
+        } catch (mysqli_sql_exception $ex) {
+            exit("Erro" . $ex->getMessage());
         }
+
         if(!($stmt->affected_rows > 0)){
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
@@ -63,21 +53,20 @@
             exit();
         }
 
-        $conn = getDbConnection();
-
         $id = $_GET["id"];
 
-        $stmt = $conn->prepare("DELETE FROM contacts WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        if (!($stmt->execute())) {
-            header("location: /pages/contacts.php");
-            exit();
+        try {
+            $stmt = $conn->prepare("DELETE FROM contacts WHERE id = ?");
+            $stmt->bind_param("i", $id);
+            $stmt->execute();
+        } catch (mysqli_sql_exception $ex) {
+            exit("Erro" . $ex->getMessage());
         }
 
         $stmt->close();
         $conn->close();
 
-        header("location: /pages/contacts.php");
+        header("Location: /pages/contacts.php");
     }
 ?>
 
@@ -176,7 +165,6 @@
             </div>
         </div>
     </div>
-    <?php include "../includes/footer_contacts.php"?>
     </div>
     <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>

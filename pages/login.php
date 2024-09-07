@@ -3,7 +3,14 @@
 
   if($_SERVER["REQUEST_METHOD"] === "POST"){
     
-    if(!isset($_POST["username"]) || !isset($_POST["pass"])) exit();
+    if(!isset($_POST["username"]) || !isset($_POST["pass"])){
+      header("Location: /pages/login.php");
+      exit();
+    }
+    if(empty($_POST["username"]) || empty($_POST["pass"])){
+      header("Location: /pages/login.php");
+      exit();
+    }
     
     $username = trim($_POST["username"]);
     $pass = trim($_POST["pass"]);
@@ -20,7 +27,7 @@
     $result = $stmt->get_result();
     $data = $result->fetch_assoc();
 
-    $exist = $result && password_verify($pass, $data["pass"]);
+    $exist = password_verify($pass, $data["pass"]);
 
     $stmt->close();
     $conn->close();
@@ -49,7 +56,7 @@
         <img class="mb-4" src="/docs/5.0/assets/brand/bootstrap-logo.svg" alt="" width="72" height="57">
         <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
         <div class="form-floating">
-          <input require type="text" name= "username" class="form-control" id="floatingInput">
+          <input require type="text" name= "username" class="form-control" id="floatingInput" placeholder="Username">
           <label for="floatingInput">Username</label>
         </div>
         <div class="form-floating">

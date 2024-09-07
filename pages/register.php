@@ -43,26 +43,30 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
-</head>
-<body>
-    <form action="" method="post">
-        <label for="username">
-            Username:
-            <input type="text" name="username" id="username" require>
-        </label>
-        <label for="pass">
-            Username:
-            <input type="password" name="pass" id="pass" require>
-        </label>
-        <label for="email">
-            Email:
-            <input type="email" name="email" id="email">
-        </label>
-        <input type="submit" value="Registrar">
+  <?php include "../includes/head.php" ?>
+  <head>
+    <link rel="stylesheet" href="../public/css/login.css">
+    <title>Registrar</title>
+  </head>
+  <body class="text-center">
+    <main class="form-signin">
+      <form action="" method="post">
+        <h1 class="h3 mb-3 fw-normal">Registre-se</h1>
+        <div class="form-floating">
+          <input require type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
+          <label for="floatingInput">Username</label>
+        </div>
+        <div class="form-floating">
+          <input require type="text" name="email" class="form-control" id="floatingPassword" placeholder="Email">
+          <label for="floatingPassword">Email</label>
+        </div>
+        <div class="form-floating">
+          <input require type="password" name="pass" class="form-control" id="floatingPassword" placeholder="Password">
+          <label for="floatingPassword">Password</label>
+        </div>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+      <p class="mt-5 mb-3 text-muted">Já é cadastrado?<a href="/pages/login.php"> Entrar</a></p>
     </form>
+  </main>
 </body>
 </html>
