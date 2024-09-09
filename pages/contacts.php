@@ -82,7 +82,13 @@
     <div class="row align-items-center">
         <div class="col-md-6">
             <div class="mb-3">
-                <h5 class="card-title">Agenda de Contatos <span class="text-muted fw-normal ms-2"><?= count($contacts) ?></span></h5>
+                <h5 class="card-title">
+                    <img class="mb-4" src="../public/assets/logo1.png" alt="" width="60" height="60">
+                    Agenda de Contatos 
+                    <span class="text-muted fw-normal ms-2">
+                        <?= count($contacts) ?>
+                    </span>
+                </h5>
             </div>
         </div>
         <div class="col-md-6">
@@ -170,26 +176,7 @@
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript"></script>
-    <script>
-        const handleSubmitDell = async (id) => {
-            try {
-                await fetch(`/pages/contacts.php?id=${id}`, {
-                    method: "DELETE",
-                });
-            } catch (error) {
-                throw new Error(error);
-            }
-        }
-
-        const handleModalView = () => {
-            var inputOnModal = document.querySelectorAll("input.form-control");
-            var modal = document.getElementById("modal-add");
-            modal.style.display = modal.style.display == "none" 
-                ? "block"
-                : "none";
-            inputOnModal.forEach(item => item.value = "");
-        }
-    </script>
+    <script src="../public/js/script.js"></script>
 </body>
 
 </html>
