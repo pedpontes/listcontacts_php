@@ -74,7 +74,7 @@
 <html lang="pt-BR">
     <?php include "../includes/head.php" ?>
 <head>
-    <title>Contacts list table - Bootdey.com</title>
+    <title>Lista de contatos</title>
     <link rel="stylesheet" href="../public/css/contacts.css">
 </head>
 <body>

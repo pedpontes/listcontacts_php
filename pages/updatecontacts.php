@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>account setting or edit profile - Bootdey.com</title>
+    <title>Atualizar dados</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../public/css/updatecontacts.css" rel="stylesheet">
@@ -56,8 +56,8 @@
                         <div class="row gutters">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
                                 <div class="text-right">
-                                    <input type="submit" id="submit" class="btn btn-secondary" value="Cancelar"/>
-                                    <input type="submit" id="submit" class="btn btn-primary" value="Atualizar"/>
+                                    <input type="button" id="btncancel" class="btn btn-secondary" value="Cancelar"/>
+                                    <input type="button" id="submit" class="btn btn-primary" value="Atualizar"/>
                                 </div>
                             </div>
                         </div>

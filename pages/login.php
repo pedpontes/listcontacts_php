@@ -48,7 +48,7 @@
   <?php include "../includes/head.php" ?>
   <head>
     <link rel="stylesheet" href="../public/css/login.css">
-    <title>Login</title>
+    <title>Entrar</title>
   </head>
   <body class="text-center">
     <main class="form-signin">
