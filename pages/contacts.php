@@ -1,6 +1,8 @@
 <?php
+    //verifica a sessao do usuario
     include "../includes/check_session.php";
 
+    //retorna os contatos do usuario especifico
     if($_SERVER["REQUEST_METHOD"] === "GET"){
 
         $userid = $_SESSION["id"];
@@ -10,6 +12,8 @@
         $contacts = $result->fetch_all();
         $conn->close();
     }
+
+    //adicionar contatos
     elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
         $id = $_SESSION["id"];
 
@@ -28,11 +32,11 @@
         $address = $_POST["address"];
         $obs = isset($_POST["obs"]) ? $_POST["obs"] : "";
         
+        //prepara a consulta sql
         try {
             $stmt = $conn->prepare("INSERT INTO contacts (name, address, user_id, tell, email, obs) VALUES (?,?,'$id',?,?,?)");
-            $stmt->bind_param("sssss", $name, $email, $tell, $address, $obs);
+            $stmt->bind_param("sssss", $name, $address, $tell, $email, $obs);
             $stmt->execute();
-
         } catch (mysqli_sql_exception $ex) {
             exit("Erro" . $ex->getMessage());
         }
@@ -47,6 +51,8 @@
 
         header("location: /pages/contacts.php");
     }
+
+    //deleta contato especifico
     elseif($_SERVER["REQUEST_METHOD"] === "DELETE"){
         if(!isset($_GET["id"])){
             header("location: /pages/contacts.php");
@@ -93,7 +99,7 @@
         </div>
         <div class="col-md-6">
             <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-                <div style="color: white;" onclick= "handleModalView()">
+                <div style="color: white;" id="addBtn" onclick="handleModalView()">
                     <a class="btn btn-primary"><i
                             class="bx bx-plus me-1"></i>Adicionar</a>
                 </div>
@@ -151,12 +157,12 @@
                                 <td>
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
-                                            <a href="javascript:void(0);" data-bs-toggle="tooltip"
+                                            <a href="/pages/updatecontacts.php?id=<?=$item[0]?>" data-bs-toggle="tooltip"
                                                 data-bs-placement="top" title="Edit" class="px-2 text-primary"><i
                                                     class="bx bx-pencil font-size-18"></i></a>
                                         </li>
                                         <li class="list-inline-item" id="dell" onclick="handleSubmitDell(<?= $item[0]?>)">
-                                            <a href="/pages/contacts.php?id=<?= $item[0]?>" data-bs-toggle="tooltip"
+                                            <a href="/pages/contacts.php?id=<?=$item[0]?>" data-bs-toggle="tooltip"
                                                 data-bs-placement="top" title="Delete" class="px-2 text-danger"><i
                                                     class="bx bx-trash-alt font-size-18"></i></a>
                                         </li>
@@ -178,5 +184,4 @@
     <script type="text/javascript"></script>
     <script src="../public/js/script.js"></script>
 </body>
-
 </html>
