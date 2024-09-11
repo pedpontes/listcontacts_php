@@ -16,8 +16,6 @@
             
             $pass = password_hash($pass, PASSWORD_BCRYPT);
 
-            echo $pass;
-
             try {
                 $stmt = $conn->prepare("INSERT INTO users (username, pass, email) VALUES (?,'$pass',?)");
                 $stmt->bind_param('ss', $username, $email);
@@ -58,15 +56,15 @@
         <img class="mb-4" src="../public/assets/logo1.png" alt="" width="200" height="200">
         <h1 class="h3 mb-3 fw-normal">Registre-se</h1>
         <div class="form-floating">
-          <input require type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
+          <input required type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
           <label for="floatingInput">Username</label>
         </div>
         <div class="form-floating">
-          <input require type="text" name="email" class="form-control" id="floatingPassword" placeholder="Email">
+          <input required type="text" name="email" class="form-control" id="floatingPassword" placeholder="Email">
           <label for="floatingPassword">Email</label>
         </div>
         <div class="form-floating">
-          <input require type="password" name="pass" class="form-control" id="floatingPassword" placeholder="Password">
+          <input required type="password" name="pass" class="form-control" id="floatingPassword" placeholder="Password">
           <label for="floatingPassword">Password</label>
         </div>
       <button class="w-100 btn btn-lg btn-primary" type="submit">Registrar</button>

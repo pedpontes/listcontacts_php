@@ -17,35 +17,35 @@
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="fullName">Nome
-                                        <input name="name" type="text" class="form-control" id="fullName" placeholder="Digite seu nome">
+                                        <input required name="name" type="text" class="form-control" id="fullName" placeholder="Digite seu nome">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="eMail">E-mail
-                                        <input require name="email" type="email" class="form-control" id="eMail" placeholder="exemplo@email.com">
+                                        <input required name="email" type="email" class="form-control" id="eMail" placeholder="exemplo@email.com">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="phone">Telefone/Celular
-                                        <input require name="tell" type="text" class="form-control" id="phone" placeholder="359...">
+                                        <input required name="tell" type="text" class="form-control" id="phone" placeholder="359...">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="website">Endereço
-                                        <input require name="address" type="text" class="form-control" id="address" placeholder="Rua,número,bairro...">
+                                        <input required name="address" type="text" class="form-control" id="address" placeholder="Rua,número,bairro...">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="website">Observação (Opcional)
-                                        <input require name="obs" type="text" class="form-control" id="obs">
+                                        <input name="obs" type="text" class="form-control" id="obs">
                                     </label>
                                 </div>
                             </div>

@@ -3,6 +3,8 @@
 
   if($_SERVER["REQUEST_METHOD"] === "POST"){
     
+    $conn = getDbConnection();
+
     if(!isset($_POST["username"]) || !isset($_POST["pass"])){
       header("Location: /pages/login.php");
       exit();
@@ -18,27 +20,40 @@
     try {
       $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
       $stmt->bind_param("s", $username);
-
       $stmt->execute();
+
     } catch (mysqli_sql_exception $e) {
       exit("Erro: ". $e->getMessage());
     }
 
     $result = $stmt->get_result();
-    $data = $result->fetch_assoc();
+    $user = $result->fetch_assoc();
 
-    $exist = password_verify($pass, $data["pass"]);
+    //verifica se o usuario existe
+    if(!isset($user)){
+      header("Location: /pages/login.php");
+      exit();
+    }
+
+    $match = password_verify($pass, $user["pass"]);
 
     $stmt->close();
     $conn->close();
     
-    if($exist){
-      $_SESSION["username"] = $data["username"];
-      $_SESSION["pass"] = $data["pass"];
-      $_SESSION["id"] = $data["id"];
+    //caso o username e pass derem match, insere na session
+    if($match){
+      $_SESSION["username"] = $user["username"];
+      $_SESSION["pass"] = $user["pass"];
+      $_SESSION["id"] = $user["id"];
       
       header("Location: /pages/contacts.php");
       exit();
+    }
+    else{
+      if(!isset($user)){
+        header("Location: /pages/login.php");
+        exit();
+      }
     }
   }
 ?>
@@ -56,11 +71,11 @@
         <img class="mb-4" src="../public/assets/logo1.png" alt="" width="200" height="200">
         <h1 class="h3 mb-3 fw-normal">Entrar</h1>
         <div class="form-floating">
-          <input require type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
+          <input required type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
           <label for="floatingInput">Username</label>
         </div>
         <div class="form-floating">
-          <input require type="password" name="pass" class="form-control" id="floatingPassword" placeholder="Password">
+          <input required type="password" name="pass" class="form-control" id="floatingPassword" placeholder="Password">
           <label for="floatingPassword">Password</label>
         </div>
       <button class="w-100 btn btn-lg btn-primary" type="submit">Entrar</button>

@@ -2,22 +2,13 @@
     include "../includes/check_session.php";
 
     if($_SERVER["REQUEST_METHOD"] === "GET"){
-        if(!isset($_GET["id"])){
-            header("Location: /pages/contacts.php");
-            exit();
-        }
-        elseif(empty($_GET["id"])){
-            header("Location: /pages/contacts.php");
-            exit();
-        }
-        $idContact = $_GET["id"];
         $id = $_SESSION["id"];
 
         $conn = getDbConnection();
 
         try{
-            $stmt = $conn->prepare("SELECT * FROM contacts WHERE id = ? and user_id = ?");
-            $stmt->bind_param("ii", $idContact, $id);
+            $stmt = $conn->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->bind_param("i", $id);
             $stmt->execute();
         }
         catch(mysqli_sql_exception $ex){
@@ -26,10 +17,6 @@
 
         $result = $stmt->get_result();
         $contact = $result->fetch_assoc();
-        if(!$contact){
-            header("Location: /pages/contacts.php");
-            exit();
-        }
 
         $stmt->close();
         $conn->close();
@@ -38,38 +25,57 @@
     elseif($_SERVER["REQUEST_METHOD"] === "POST"){
         $id = $_SESSION["id"];
 
-        if(!(isset($_POST["name"]) || isset($_POST["email"]) || isset($_POST["tell"]) || isset($_POST["address"]))){
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            }
-        elseif(empty($_POST["name"]) || empty($_POST["email"]) || empty($_POST["address"]) || empty($_POST["tell"])){
-                header("Location: " . $_SERVER['PHP_SELF']);
-                exit();
-            }
+        //verificar se username e email é valido
+        if(!isset($_POST["username"]) || !isset($_POST["email"]) || !isset($_POST["currentpass"]) || empty($_POST["username"]) || empty($_POST["email"] || empty($_POST["currentpass"]))){
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
 
-        $username = $_POST["username"];
-        $email = $_POST["email"];
-        
+        $username = trim($_POST["username"]);
+        $email = trim($_POST["email"]);
+        $currentpass = trim($_POST["currentpass"]);
+
+        $pass = $_SESSION["pass"];
+        if(!password_verify($currentpass, $pass)){
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+        }
+
+        //verifica se ele quis trocar a senha e entao faz match entre as senha atuais
+        if(isset($_POST["newpass"]) && !empty($_POST["newpass"])){
+            $newpass = trim($_POST["newpass"]);
+            $newpassCrypt = password_hash($newpass, PASSWORD_BCRYPT);
+        }
+
         try {
-            $stmt = $conn->prepare("UPDATE contacts SET username = ?, email = ?, pass = ? WHERE id = $id");
-            $stmt->bind_param("ssss", $username, $email, $pass);
-            $stmt->execute();
+            //para quando o usuario digitou a senha atual e a nova senha corretamente
+            if(isset($newpassCrypt)){
+                $stmt = $conn->prepare("UPDATE users SET username = ?, email = ?, pass = ? WHERE id = $id");
+                $stmt->bind_param("sss", $username, $email, $newpassCrypt);
+                $stmt->execute();
+            }
+            //para quando ele somente alterou outros campos
+            else{
+                $stmt = $conn->prepare("UPDATE users SET username = ?, email = ? WHERE id = $id");
+                $stmt->bind_param("ss", $username, $email);
+                $stmt->execute();
+            }
         } catch (mysqli_sql_exception $ex) {
             exit("Erro" . $ex->getMessage());
         }
 
+        
         if(!($stmt->affected_rows > 0)){
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
-        } 
-
+        }
+        
         $stmt->close();
         $conn->close();
 
-        header("location: /pages/contacts.php");
+        include "../includes/logout.php";
+        exit();
     }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -94,21 +100,28 @@
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="fullName">Nome do usuario
-                                        <input require name="username" type="text" class="form-control" id="fullName" value="<?=$contact["username"]?>" placeholder="Username">
+                                        <input required name="username" type="text" class="form-control" id="fullName" value="<?=$contact["username"]?>" placeholder="Username">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="eMail">E-mail
-                                        <input require type="email" name="email" class="form-control" id="eMail" value="<?=$contact["email"]?>" placeholder="exemplo@email.com">
+                                        <input required type="email" name="email" class="form-control" id="eMail" value="<?=$contact["email"]?>" placeholder="exemplo@email.com">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label for="phone">Senha
-                                        <input require type="pass" name="pass" class="form-control" value="<?=$contact["pass"]?>" id="pass">
+                                    <label for="phone">Senha Atual
+                                        <input required type="password" name="currentpass" class="form-control" id="pass">
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
+                                <div class="form-group">
+                                    <label for="phone">Nova senha
+                                        <input type="password" name="newpass" class="form-control" id="pass">
                                     </label>
                                 </div>
                             </div>

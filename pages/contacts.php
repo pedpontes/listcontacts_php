@@ -55,7 +55,7 @@
     //deleta contato especifico
     elseif($_SERVER["REQUEST_METHOD"] === "DELETE"){
         if(!isset($_GET["id"])){
-            header("location: /pages/contacts.php");
+            header("Location: /pages/contacts.php");
             exit();
         }
 
@@ -103,8 +103,11 @@
                     <a class="btn btn-primary"><i
                             class="bx bx-plus me-1"></i>Adicionar</a>
                 </div>
+                <div style="color: white;">
+                    <a class="btn btn-primary" href="/pages/updateuser.php">Perfil</a>
+                </div>
                 <div>
-                    <a class="btn btn-danger" href="/pages/logout.php">Sair</a>
+                    <a class="btn btn-danger" href="/includes/logout.php">Sair</a>
                 </div>
             </div>
         </div>

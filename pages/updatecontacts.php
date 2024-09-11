@@ -57,8 +57,8 @@
         $obs = isset($_POST["obs"]) ? $_POST["obs"] : "";
         
         try {
-            $stmt = $conn->prepare("UPDATE contacts SET name = ?, address = ?, tell = ?, email = ?, obs = ? WHERE id = ? and user_id = '$id'");
-            $stmt->bind_param("ssssss", $name, $address, $tell, $email, $obs, $idContact);
+            $stmt = $conn->prepare("UPDATE contacts SET name = ?, address = ?, tell = ?, email = ?, obs = ? WHERE id = ? and user_id = $id");
+            $stmt->bind_param("ssssii", $name, $address, $tell, $email, $obs, $idContact);
             $stmt->execute();
         } catch (mysqli_sql_exception $ex) {
             exit("Erro" . $ex->getMessage());
@@ -74,8 +74,6 @@
 
         header("location: /pages/contacts.php");
     }
-
-
 ?>
 
 <!DOCTYPE html>
@@ -100,35 +98,35 @@
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="fullName">Nome
-                                        <input require name="name" type="text" class="form-control" id="fullName" value="<?=$contact["name"]?>" placeholder="Digite seu nome">
+                                        <input required name="name" type="text" class="form-control" id="fullName" value="<?=$contact["name"]?>" placeholder="Digite seu nome">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="eMail">E-mail
-                                        <input require type="email" name="email" class="form-control" id="eMail" value="<?=$contact["email"]?>" placeholder="exemplo@email.com">
+                                        <input required type="email" name="email" class="form-control" id="eMail" value="<?=$contact["email"]?>" placeholder="exemplo@email.com">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="phone">Telefone/Celular
-                                        <input require type="text" name="tell" class="form-control" value="<?=$contact["tell"]?>" id="phone" placeholder="359...">
+                                        <input required type="text" name="tell" class="form-control" value="<?=$contact["tell"]?>" id="phone" placeholder="359...">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="website">Endereço
-                                        <input require type="text" name="address" class="form-control" value="<?=$contact["address"]?>" id="website" placeholder="Rua,número,bairro...">
+                                        <input required type="text" name="address" class="form-control" value="<?=$contact["address"]?>" id="website" placeholder="Rua,número,bairro...">
                                     </label>
                                 </div>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
                                     <label for="website">Observação
-                                        <input require type="text" name="obs" class="form-control" value="<?=$contact["obs"]?>" id="website" placeholder="">
+                                        <input type="text" name="obs" class="form-control" value="<?=$contact["obs"]?>" id="website" placeholder="">
                                     </label>
                                 </div>
                             </div>
