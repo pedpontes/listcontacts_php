@@ -1,6 +1,7 @@
 <?php
     require "../services/db.php";
 
+    //registrar usuario
     if($_SERVER["REQUEST_METHOD"] === "POST"){
         if(!isset($_POST["username"]) || !isset($_POST["pass"]) || !isset($_POST["email"])) exit();
 
@@ -8,6 +9,7 @@
         $pass = trim($_POST["pass"]);
         $email = trim($_POST["email"]);
 
+        //somente se o campo email for valido
         if(filter_var($email, FILTER_VALIDATE_EMAIL)){
             
             $conn = getDbConnection();
@@ -38,6 +40,8 @@
             header("location: /pages/login.php");
             exit();
         }
+        header("location: /pages/register.php");
+        exit();
     }
 ?>
 
@@ -51,7 +55,7 @@
   <body class="text-center">
     <main class="form-signin">
       <form action="" method="post">
-        <img class="mb-4" src="../public/assets/logo1.png" alt="" width="100" height="100">
+        <img class="mb-4" src="../public/assets/logo1.png" alt="" width="200" height="200">
         <h1 class="h3 mb-3 fw-normal">Registre-se</h1>
         <div class="form-floating">
           <input require type="text" name="username" class="form-control" id="floatingInput" placeholder="Username">
@@ -65,7 +69,7 @@
           <input require type="password" name="pass" class="form-control" id="floatingPassword" placeholder="Password">
           <label for="floatingPassword">Password</label>
         </div>
-      <button class="w-100 btn btn-lg btn-primary" type="submit">Sign up</button>
+      <button class="w-100 btn btn-lg btn-primary" type="submit">Registrar</button>
       <p class="mt-5 mb-3 text-muted">Já é cadastrado?<a href="/pages/login.php"> Entrar</a></p>
     </form>
   </main>

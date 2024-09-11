@@ -1,7 +1,6 @@
 <?php
     include "../includes/check_session.php";
 
-    //retorna a pagina de edição para o contato requerido apartir do id
     if($_SERVER["REQUEST_METHOD"] === "GET"){
         if(!isset($_GET["id"])){
             header("Location: /pages/contacts.php");
@@ -36,10 +35,8 @@
         $conn->close();
     }
 
-    //envia requisição para edição do contato
     elseif($_SERVER["REQUEST_METHOD"] === "POST"){
         $id = $_SESSION["id"];
-        $idContact = $_GET["id"];
 
         if(!(isset($_POST["name"]) || isset($_POST["email"]) || isset($_POST["tell"]) || isset($_POST["address"]))){
                 header("Location: " . $_SERVER['PHP_SELF']);
@@ -50,15 +47,12 @@
                 exit();
             }
 
-        $name = $_POST["name"];
+        $username = $_POST["username"];
         $email = $_POST["email"];
-        $tell = $_POST["tell"];
-        $address = $_POST["address"];
-        $obs = isset($_POST["obs"]) ? $_POST["obs"] : "";
         
         try {
-            $stmt = $conn->prepare("UPDATE contacts SET name = ?, address = ?, tell = ?, email = ?, obs = ? WHERE id = ? and user_id = '$id'");
-            $stmt->bind_param("ssssss", $name, $address, $tell, $email, $obs, $idContact);
+            $stmt = $conn->prepare("UPDATE contacts SET username = ?, email = ?, pass = ? WHERE id = $id");
+            $stmt->bind_param("ssss", $username, $email, $pass);
             $stmt->execute();
         } catch (mysqli_sql_exception $ex) {
             exit("Erro" . $ex->getMessage());
@@ -82,7 +76,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>Atualizar dados</title>
+    <title>Dados do perfil</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../public/css/updatecontacts.css" rel="stylesheet">
@@ -95,12 +89,12 @@
                     <form method="POST" class="card-body">
                         <div class="row gutters">
                             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                <h6 class="mb-2 text-primary">Informações do contato: #<?= $contact["id"] ?></h6>
+                                <h6 class="mb-2 text-primary">Informações de perfil: #<?= $contact["username"] ?></h6>
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label for="fullName">Nome
-                                        <input require name="name" type="text" class="form-control" id="fullName" value="<?=$contact["name"]?>" placeholder="Digite seu nome">
+                                    <label for="fullName">Nome do usuario
+                                        <input require name="username" type="text" class="form-control" id="fullName" value="<?=$contact["username"]?>" placeholder="Username">
                                     </label>
                                 </div>
                             </div>
@@ -113,22 +107,8 @@
                             </div>
                             <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
                                 <div class="form-group">
-                                    <label for="phone">Telefone/Celular
-                                        <input require type="text" name="tell" class="form-control" value="<?=$contact["tell"]?>" id="phone" placeholder="359...">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for="website">Endereço
-                                        <input require type="text" name="address" class="form-control" value="<?=$contact["address"]?>" id="website" placeholder="Rua,número,bairro...">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <label for="website">Observação
-                                        <input require type="text" name="obs" class="form-control" value="<?=$contact["obs"]?>" id="website" placeholder="">
+                                    <label for="phone">Senha
+                                        <input require type="pass" name="pass" class="form-control" value="<?=$contact["pass"]?>" id="pass">
                                     </label>
                                 </div>
                             </div>

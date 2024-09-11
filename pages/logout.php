@@ -1,4 +1,6 @@
 <?php
+
+    //destruir sessao em logout
     session_start();
 
     session_destroy();

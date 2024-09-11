@@ -1,6 +1,8 @@
 <?php
+    //verifica a sessao do usuario
     include "../includes/check_session.php";
 
+    //retorna os contatos do usuario especifico
     if($_SERVER["REQUEST_METHOD"] === "GET"){
 
         $userid = $_SESSION["id"];
@@ -10,6 +12,8 @@
         $contacts = $result->fetch_all();
         $conn->close();
     }
+
+    //adicionar contatos
     elseif ($_SERVER["REQUEST_METHOD"] === "POST") {
         $id = $_SESSION["id"];
 
@@ -28,11 +32,11 @@
         $address = $_POST["address"];
         $obs = isset($_POST["obs"]) ? $_POST["obs"] : "";
         
+        //prepara a consulta sql
         try {
             $stmt = $conn->prepare("INSERT INTO contacts (name, address, user_id, tell, email, obs) VALUES (?,?,'$id',?,?,?)");
-            $stmt->bind_param("sssss", $name, $email, $tell, $address, $obs);
+            $stmt->bind_param("sssss", $name, $address, $tell, $email, $obs);
             $stmt->execute();
-
         } catch (mysqli_sql_exception $ex) {
             exit("Erro" . $ex->getMessage());
         }
@@ -47,6 +51,8 @@
 
         header("location: /pages/contacts.php");
     }
+
+    //deleta contato especifico
     elseif($_SERVER["REQUEST_METHOD"] === "DELETE"){
         if(!isset($_GET["id"])){
             header("location: /pages/contacts.php");
@@ -83,7 +89,7 @@
         <div class="col-md-6">
             <div class="mb-3">
                 <h5 class="card-title">
-                    <img class="mb-4" src="../public/assets/logo1.png" alt="" width="60" height="60">
+                    <img class="mb-4" src="../public/assets/logo1.png" alt="" width="150" height="150">
                     Agenda de Contatos 
                     <span class="text-muted fw-normal ms-2">
                         <?= count($contacts) ?>
@@ -93,12 +99,12 @@
         </div>
         <div class="col-md-6">
             <div class="d-flex flex-wrap align-items-center justify-content-end gap-2 mb-3">
-                <div style="color: white;" onclick= "handleModalView()">
+                <div style="color: white;" id="addBtn" onclick="handleModalView()">
                     <a class="btn btn-primary"><i
                             class="bx bx-plus me-1"></i>Adicionar</a>
                 </div>
                 <div>
-                    <a class="btn btn-danger" href="/pages/logout.php">Logout</a>
+                    <a class="btn btn-danger" href="/pages/logout.php">Sair</a>
                 </div>
             </div>
         </div>
@@ -116,16 +122,11 @@
                             Nenhum contato para mostrar.
                         </td>
                     <?php } else{ ?>
+                    <label>Filtro: <input type="text" placeholder="Nome" oninput="handleFilterContacts(event)"></label>
                     <table class="table project-list-table table-nowrap align-middle table-borderless">
                         <thead>
                             <tr>
-                                <th scope="col" class="ps-4" style="width: 50px;">
-                                    <div class="form-check font-size-16">
-                                        <input type="checkbox" class="form-check-input" id="contacusercheck"/>
-                                        <label class="form-check-label" for="contacusercheck"></label>
-                                    </div>
-                                </th>
-                                <th scope="col">Name</th>
+                                <th scope="col">Nome</th>
                                 <th scope="col">Telefone</th>
                                 <th scope="col">E-mail</th>
                                 <th scope="col">Endereço</th>
@@ -135,28 +136,23 @@
                         </thead>
                         <tbody>
                             <?php foreach($contacts as $item){ ?>
-                            <tr>
-                                <th scope="row" class="ps-4">
-                                    <div class="form-check font-size-16"><input type="checkbox"
-                                            class="form-check-input" id="contacusercheck1" /><label
-                                            class="form-check-label" for="contacusercheck1"></label></div>
-                                </th>
-                                <td><a href="#" class="text-body"><?= $item[2] ?></a></td>
+                            <tr class="list" id="<?=$item[0]?>">
+                                <td><a class="text-body"><?= $item[2] ?></></td>
                                 <td><span class="badge badge-soft-success mb-0"><?= $item[3] ?></span></td>
                                 <td><a class="__cf_email__"
-                                        data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133"><?= $item[6] ?></a>
+                                        data-cfemail="5e0d373331300c27323b2d1e333730373c323b703d3133"><?= $item[4] ?></a>
                                 </td>
-                                <td><?= $item[4] ?></td>
+                                <td><?= $item[6] ?></td>
                                 <td><?= $item[5] ?></td>
                                 <td>
                                     <ul class="list-inline mb-0">
                                         <li class="list-inline-item">
-                                            <a href="javascript:void(0);" data-bs-toggle="tooltip"
+                                            <a href="/pages/updatecontacts.php?id=<?=$item[0]?>" data-bs-toggle="tooltip"
                                                 data-bs-placement="top" title="Edit" class="px-2 text-primary"><i
                                                     class="bx bx-pencil font-size-18"></i></a>
                                         </li>
                                         <li class="list-inline-item" id="dell" onclick="handleSubmitDell(<?= $item[0]?>)">
-                                            <a href="/pages/contacts.php?id=<?= $item[0]?>" data-bs-toggle="tooltip"
+                                            <a href="/pages/contacts.php?id=<?=$item[0]?>" data-bs-toggle="tooltip"
                                                 data-bs-placement="top" title="Delete" class="px-2 text-danger"><i
                                                     class="bx bx-trash-alt font-size-18"></i></a>
                                         </li>
@@ -172,11 +168,10 @@
         </div>
     </div>
     </div>
-    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
     <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript"></script>
-    <script src="../public/js/script.js"></script>
+    <!-- ?v=1.0 para evitar o cacheamento do script.js -->
+    <script src="../public/js/script.js?v=1.0"></script>
 </body>
-
 </html>
