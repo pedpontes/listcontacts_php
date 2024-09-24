@@ -107,7 +107,7 @@
                     <a class="btn btn-primary" href="/pages/updateuser.php">Perfil</a>
                 </div>
                 <div>
-                    <a class="btn btn-danger" href="/includes/logout.php">Sair</a>
+                    <a class="btn btn-danger" href="logout.php">Sair</a>
                 </div>
             </div>
         </div>

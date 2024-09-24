@@ -73,7 +73,7 @@
         $stmt->close();
         $conn->close();
 
-        include "../includes/logout.php";
+        include "logout.php";
         exit();
     }
 ?>
